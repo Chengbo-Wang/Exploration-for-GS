@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Escaping the Blur Trap: Exploration as a Missing Ingredient in 3D Gaussian Splatting">
+    <title>ExploreGS | Escaping the Blur Trap</title>
+
+    <!-- Font: Poppins + Lora -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+
+    <!-- KaTeX for math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <!-- Custom styles & scripts -->
+    <link rel="stylesheet" href="css/style.css">
+    <script defer src="js/main.js"></script>
+
+</head>
+<body>
+
+<!-- ====== NAVIGATION ====== -->
+<nav class="nav">
+    <div class="container">
+        <a href="#">Home</a>
+        <a href="#abstract">Abstract</a>
+        <a href="#blur-trap">The Blur Trap</a>
+        <a href="#method">Method</a>
+        <a href="#contributions">Contributions</a>
+        <a href="#bibtex">BibTeX</a>
+    </div>
+</nav>
+
+<!-- ====== HERO ====== -->
+<header class="hero container">
+    <h1>Exploration Matters for Escaping the Blur Trap<br>in 3D Gaussian Splatting</h1>
+    <!-- <p class="subtitle">Put your paper subtitle or TL;DR here</p> -->
+
+    <p class="authors">
+        <!-- TODO: fill in actual author names -->
+        <span><a href="https://chengbo-wang.github.io/" target="_blank" rel="noopener">Chengbo Wang</a><sup>1</sup></span>,
+        <span><a href="https://guozheng-ma.github.io/" targect="_blank" rel="noopener">Guozheng Ma</a><sup>2</sup></span>,
+        <span><a href="" target="_blank" rel="noopener">Jinhong Wu</a><sup>1</sup></span>,
+        <span><a href="" target="_blank" rel="noopener">Tie Ji</a><sup>1</sup></span>,
+        <span><a href="https://yizhenlao.github.io/" target="_blank" rel="noopener">Yizhen Lao</a><sup>1*</sup></span>
+    </p>
+    <p class="affiliations">
+        <sup>1</sup> Hunan University &nbsp;&nbsp;
+        <sup>2</sup> Nanyang Technological University &nbsp;&nbsp;
+        <sup>*</sup> Corresponding author
+    </p>
+    <div class="link-bar">
+        <a href="https://arxiv.org/pdf/2607.17965" class="link-btn primary">📄 Paper (PDF)</a>
+        <a href="https://arxiv.org/abs/2607.17965" class="link-btn">📝 arXiv</a>
+        <a href="https://github.com/Chengbo-Wang/ExploreGS" class="link-btn">💻 Code</a>
+        <!-- <a href="#" class="link-btn">🎥 Video</a> -->
+        <!-- <a href="#" class="link-btn">📊 Poster</a> -->
+    </div>
+</header>
+
+<!-- ====== TEASER ====== -->
+<section class="teaser">
+    <div class="container">
+        <!-- TODO: replace with actual teaser figure -->
+        <img src="assets/teaser.png" alt="Teaser figure" style="width:100%;">
+    <p class="caption">
+
+        <span class="accent">
+            <strong>
+                We identify the <em>Blur Trap</em> as a fundamental limitation intrinsic to 3DGS, 
+                rooted in an inherent exploitation-only optimization bias.
+            </strong>
+        </span> 
+        It manifests as two variants: the <strong>Far-Side Blur Trap</strong> triggered by depth-gradient deficiency and the <strong>Near-Side Blur Trap</strong> driven by 2D-gradient attenuation. 
+        To break this deadlock, we introduce minimal exploration operators: <em>Random Seeding</em> and <em>Random Splitting</em>. 
+        These straightforward interventions bypass gradient-dependent optimization, consistently recovering structural details and proving that simple explicit exploration is highly effective for escaping the Blur Trap without complex modifications.
+    </p>
+    </div>
+</section>
+
+<!-- ====== QUALITATIVE COMPARISON ====== -->
+<section style="padding-top:0;" id="qualitative">
+    <div class="container">
+        <div class="comp-scenes">
+            <button class="comp-scene-btn active" data-frame="00009">BICYCLE</button>
+            <button class="comp-scene-btn" data-frame="00008">COUNTER</button>
+            <button class="comp-scene-btn" data-frame="00032">TRAIN</button>
+            <button class="comp-scene-btn" data-frame="00040">DL3DV-01</button>
+            <button class="comp-scene-btn" data-frame="00037">DL3DV-21</button>
+            <button class="comp-scene-btn" data-frame="00003">DL3DV-82</button>
+            <button class="comp-scene-btn" data-frame="00006">OMMO-06</button>
+            <button class="comp-scene-btn" data-frame="00020">OMMO-10</button>
+            <button class="comp-scene-btn" data-frame="00031">OMMO-15</button>
+        </div>
+        <div class="comp-container">
+            <canvas id="comp-canvas"></canvas>
+        </div>
+        <div class="comp-controls">
+            <div class="comp-btns" data-side="left">
+                <button class="comp-btn active" data-method="Ours">Ours</button>
+                <button class="comp-btn" data-method="GT">GT</button>
+            </div>
+            <div class="comp-btns" data-side="right">
+                <button class="comp-btn" data-method="GT">GT</button>
+                <button class="comp-btn" data-method="Ours">Ours</button>
+                <button class="comp-btn" data-method="HoGS">HoGS</button>
+                <button class="comp-btn active" data-method="3DGS">3DGS</button>
+            </div>
+        </div>
+        <p class="caption text-center">
+            Qualitative comparison across benchmark scenes. Our method resolves blur in both far-field (distant details) and near-field (occluded regions) while baseline methods retain the Blur Trap artifacts.
+        </p>
+    </div>
+</section>
+
+<!-- Abstract -->
+<section id="abstract" class="alt">
+    <div class="container">
+        <h2>Abstract</h2>
+        <p>
+            3D Gaussian Splatting (3DGS) employs Gaussian primitives for explicit scene representation, facilitating real-time, high-fidelity reconstruction and novel view synthesis of complex scenes. 
+            However, the explicit modeling inherent in 3DGS introduces a gradient bias during optimization, rendering its non-convex optimization process highly susceptible to convergence toward local suboptimal solutions. 
+            This constitutes a fundamental limitation in 3DGS optimization, which we term the <strong>Blur Trap</strong>.  
+            To address this limitation, we integrate simple explicit exploration into the 3DGS optimization framework. 
+            First, through rigorous mathematical analysis of the 3DGS optimization formulation, we identify the underlying optimization bias responsible for the Blur Trap and categorize it into two distinct subtypes: the Far-Side Blur Trap and the Near-Side Blur Trap. 
+            Subsequently, we propose two highly straightforward exploration strategies—<em>Random Seeding</em> and <em>Random Splitting</em>—to mitigate the Far-Side and Near-Side Blur Traps, respectively.
+            Experimental validation demonstrates that the incorporation of these exploration operators effectively and complementarily overcome the Blur Trap, achieving high-quality rendering performance across multiple datasets. 
+        </p>
+    </div>
+</section>
+
+<!-- The Blur Trap -->
+<section id="blur-trap">
+    <div class="container">
+        <h2>The Blur Trap</h2>
+
+        <!-- Part 1: What -->
+        <h3>What is the Blur Trap?</h3>
+        <p>
+            In 3DGS reconstructions, <strong>certain regions remain persistently blurry despite sufficient training views</strong>. This is not random noise — it appears consistently in two kinds of regions: <em>distant content</em> and <em>occluded near-field regions</em>. The persistence of these artifacts under abundant supervision indicates that the cause is not insufficient data but something rooted in the optimization process itself. We refer to this systematic failure as the <strong>Blur Trap</strong>.
+        </p>
+
+        <!-- Two subtypes: manifestation -->
+        <div class="two-col">
+            <div class="card">
+                <div class="card-head">
+                    <span class="icon">⛰️</span>
+                    <h3>Far-Side Blur Trap</h3>
+                </div>
+                <p>
+                    Arises in <strong>distant regions</strong>. Gaussians primitives stall at suboptimal depths with no corrective signal, leaving the rendered far field persistently blurry.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-head">
+                    <span class="icon">🌿</span>
+                    <h3>Near-Side Blur Trap</h3>
+                </div>
+                <p>
+                    Arises in <strong>occluded foreground regions</strong>. Densification is suppressed, starving these regions of primitives and leaving the rendered near field persistently blurry.
+                </p>
+            </div>
+        </div>
+
+        <img src="assets/blur_trap.png" alt="Two subtypes of the Blur Trap" style="width:100%; margin:0.5rem 0; border-radius:0;">
+
+        <!-- Part 2: Why -->
+        <h3 class="mt-2">Why does Blur Trap form?</h3>
+        <p>
+            We trace the issue back to the position gradients that drive 3DGS optimization. 
+            The diagnosis begins with one empirical fact, 
+            which then splits into two distinct gradient deficiencies — 
+            one of <em>direction</em> and one of <em>magnitude</em>.
+        </p>
+
+        <!-- Premise -->
+        <div class="premise">
+            <div>
+                <h3><span class="insight-tag">💡 Key Insight</span> The 2D position gradient dominates the 3D position update.</h3>
+                <p>
+                    The 3D position update of each Gaussian is composed of three branches, corresponding to the 2D projected position, the 2D covariance, and the spherical harmonic coefficients.
+                    Empirically, <strong>the 2D position component dominates the other two by two to three orders of magnitude</strong> throughout training. 
+                    The position update is therefore effectively governed by 2D position gradient alone.
+                </p>
+            </div>
+        </div>
+
+        <p class="text-center" style="color:#6b6962; margin:1.5rem 0 0.5rem;">The two analyses below examine this single derivative term along two axes — its <em>direction</em> and its <em>magnitude</em> ↓</p>
+
+        <!-- Two causes: mechanism -->
+        <div class="two-col">
+            <div class="card">
+                <div class="card-head">
+                    <h3>📐 Direction Orthogonality</h3>
+                </div>
+                <p>
+                    We prove that the 3D position update derived from this dominant 2D gradient is <strong>strictly orthogonal to the viewing ray</strong>. The optimizer can only move primitives within the image plane and <em>never along the depth direction</em>. No depth-directed optimization signal exists to drive distant Gaussians to their correct depth — this is the root cause of the <em>Far-Side Blur Trap</em>.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-head">
+                    <h3>📉 Magnitude Attenuation</h3>
+                </div>
+                <p>
+                    The same 2D gradient also serves as the densification criterion.
+                    In the $\alpha$-blending pipeline, <strong>multiple Gaussians at different depths jointly render the same pixel color</strong>, diluting the gradient contribution of each individual occluded primitive.
+                    As a result, <strong>later-ranked Gaussians receive transmittance-weighted gradients whose magnitude decays rapidly</strong>, and the densification trigger is systematically suppressed before it can fire — this is the root cause of the <em>Near-Side Blur Trap</em>.
+                </p>
+            </div>
+        </div>
+
+        <!-- Theory diagram -->
+        <img src="assets/mechanism.png" alt="Two root causes of the Blur Trap" style="width:100%; margin-top:2rem;">
+        <p class="caption text-center" style="margin-top:0.5rem;">
+The Blur Trap stems from two gradient deficiencies.
+            <strong>(a) Direction orthogonality:</strong> the dominant gradient is orthogonal to the viewing ray, preventing depth-directed optimization — the root cause of the <em>Far-Side Blur Trap</em>.
+            <strong>(b) Magnitude attenuation:</strong> multiple Gaussians at different depths jointly render the same pixel via $\alpha$-blending, diluting the gradient magnitude of each occluded primitive and suppressing densification — the root cause of the <em>Near-Side Blur Trap</em>.
+        </p>
+    </div>
+</section>
+
+<!-- ====== METHOD ====== -->
+<section id="method" class="alt">
+    <div class="container">
+        <h2>Method: Two Minimal Exploration Operators</h2>
+        <p>
+            We reframe 3DGS optimization as a high-dimensional non-convex problem that <em>lacks exploration</em>. Standard neural network training enjoys natural exploration sources (mini-batch noise, dropout, weight decay), but 3DGS has almost none — minibatch size of one, no implicit regularization, and a structurally biased gradient. Our remedy: two <strong>minimal exploration operators</strong> that directly and precisely compensate for what the gradient cannot supply — no architectural overhaul, no hyperparameter tuning, <em>just a small dose of exploration</em>.
+        </p>
+        
+        <div class="highlight-box" style="margin-top:0.9rem;">
+            🧩 <strong>Minimal by design.</strong> Both operators are deliberately simple. The goal is to verify that <em>explicit exploration, on its own</em>, is what 3DGS optimization is missing — not to engineer a complex exploration strategy. 
+        </div>
+
+        <div class="two-col mt-2">
+            <!-- Random Seeding -->
+            <div class="card">
+                <div class="card-head">
+                    <span class="icon">🎲</span>
+                    <h3>Random Seeding</h3>
+                </div>
+                <p class="target">Targets: Far-Side Blur Trap</p>
+                <p>
+                    Periodically injects candidate Gaussians at <strong>randomly sampled 3D positions</strong> across the scene. This bypasses the orthogonality constraint — new primitives can land at depths no existing Gaussian could reach through gradient updates alone. Seeds in invalid regions are removed by standard opacity pruning; seeds in plausible regions are refined by the regular optimization loop.
+                </p>
+            </div>
+
+            <!-- Random Splitting -->
+            <div class="card">
+                <div class="card-head">
+                    <span class="icon">✂️</span>
+                    <h3>Random Splitting</h3>
+                </div>
+                <p class="target">Targets: Near-Side Blur Trap</p>
+                <p>
+                    Periodically splits a <strong>random subset of Gaussians</strong> regardless of their accumulated 2D gradient. This bypasses the densification gate that $\alpha$-blending suppresses for occluded primitives. Even without a strong gradient signal, occluded regions receive fresh Gaussians that can begin to represent the hidden geometry.
+                </p>
+            </div>
+        </div>
+
+        <img src="assets/exploration.png" alt="Random Seeding and Random Splitting" style="width:100%; margin:0.9rem 0; border-radius:0.5rem;">
+
+    </div>
+</section>
+
+<!-- ====== CONTRIBUTIONS ====== -->
+<section id="contributions" class="alt">
+    <div class="container">
+        <h2>Contributions</h2>
+        <ol class="contrib-list">
+            <li>
+                <strong>We identify and formalize the Blur Trap</strong>, a fundamental optimization limitation of 3DGS that arises from gradient biases inherent to its physically derived backpropagation. We categorize it into two subtypes: the <strong>Far-Side Blur Trap</strong> and the <strong>Near-Side Blur Trap</strong>, each rooted in a different facet of the gradient bias.
+            </li>
+            <li>
+                <strong>We provide a rigorous theoretical analysis</strong> of the Blur Trap. In particular, we prove that the 3D position update derived from the 2D gradient is <em>orthogonal to the viewing ray</em>, which directly explains the absence of depth-directed optimization, and we characterize how $\alpha$-blending systematically attenuates the densification signal for occluded primitives.
+            </li>
+            <li>
+                <strong>We propose two minimal exploration operators</strong> — <strong>Random Seeding</strong> and <strong>Random Splitting</strong> — targeting the Far-Side and Near-Side Blur Traps respectively. The minimal design is intentional, isolating the contribution of exploration itself from incidental engineering choices.
+            </li>
+            <li>
+                <strong>Extensive experiments</strong> on Mip-NeRF 360, Tanks & Temples, Deep Blending, OMMO, and DL3DV demonstrate that each operator resolves its targeted form of blur, and that the two operators are complementary, jointly establishing <strong>exploration as a missing and essential ingredient</strong> in 3DGS optimization.
+            </li>
+        </ol>
+    </div>
+</section>
+
+<!-- ====== BIBTEX ======
+<section id="bibtex">
+    <div class="container">
+        <h2>BibTeX</h2>
+        <div class="bibtex-wrap">
+            <button class="copy-btn" onclick="copyBibtex(this)" title="Copy to clipboard">📋 Copy</button>
+            <pre class="bibtex" id="bibtex-content">
+@article{wang2025exploration,
+  title={Exploration Matters for Escaping the Blur Trap in 3D Gaussian Splatting},
+  author={Wang, Chengbo and Ma, Guozheng and Wu, Jinhong and Ji, Tie and Lao, Yizhen},
+}
+</pre>
+    </div>
+    </div>
+</section> -->
+
+<!-- ====== FOOTER ====== -->
+<footer>
+    <div class="container">
+        <p>Exploration Matters for Escaping the Blur Trap in 3D Gaussian Splatting &copy; 2026</p>
+        <!-- <p>Acknowledgments / funding information here.</p> -->
+    </div>
+</footer>
+
+</body>
+</html>
