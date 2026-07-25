@@ -28,6 +28,8 @@ parser.add_argument("--use_expcomp", action="store_true")
 parser.add_argument("--fast", action="store_true")
 parser.add_argument("--aa", action="store_true")
 
+parser.add_argument("--explore_cfg", type=str, default=None,
+                    help="Exploration config (path or short name: base, none, seed_only, split_only)")
 
 
 
@@ -57,6 +59,9 @@ if not args.skip_training:
 
     if args.fast:
         common_args += " --optimizer_type sparse_adam "
+
+    if args.explore_cfg:
+        common_args += f" --explore_cfg {args.explore_cfg} "
 
     start_time = time.time()
     for scene in mipnerf360_outdoor_scenes:

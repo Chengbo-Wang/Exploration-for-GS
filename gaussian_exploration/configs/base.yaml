@@ -1,0 +1,16 @@
+
+explore_mode: both
+
+seed:
+  enabled: true
+  num: 100
+  interval: 100
+  until: 15000
+  big_point_threshold: 10.0
+
+split:
+  enabled: true
+  num: 20
+  interval: 1
+  until: 15000
+
