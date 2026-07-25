@@ -1,0 +1,12 @@
+
+explore_mode: split
+
+seed:
+  enabled: false
+
+split:
+  enabled: true
+  num: 20
+  interval: 1
+  until: 15000
+
