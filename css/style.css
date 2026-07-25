@@ -43,7 +43,7 @@ a:hover { text-decoration: underline; }
 .nav a:hover::after { width: 100%; }
 
 /* ── Hero ── */
-.hero { text-align: center; padding: 3rem 1.5rem 2rem; }
+.hero { text-align: center; padding: 3rem 1.5rem 1rem; }
 .hero h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
 .hero .subtitle { font-size: 1.05rem; color: #b0aea5; margin-bottom: 1.25rem; }
 .authors { font-size: 1.1rem; color: #141413; font-family: 'Poppins', Arial, sans-serif; text-align: center; }
@@ -53,10 +53,17 @@ a:hover { text-decoration: underline; }
 
 /* ── Link Buttons ── */
 .link-bar { display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap; margin-top: 1.5rem; }
-.link-btn { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.55rem 1.15rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; font-family: 'Poppins', Arial, sans-serif; transition: all 0.15s; border: 1.5px solid #e8e6dc; background: #fff; color: #141413; }
-.link-btn:hover { border-color: #d97757; color: #d97757; text-decoration: none; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(217,119,87,0.12); }
+.link-btn { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.55rem 1.15rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; font-family: 'Poppins', Arial, sans-serif; transition: background 0.35s, border-color 0.35s, color 0.35s, box-shadow 0.35s, transform 0.08s cubic-bezier(0.2, 0, 0, 1); border: 1.5px solid #e8e6dc; background: #fff; color: #141413; position: relative; overflow: hidden; transform: perspective(400px) rotateX(0deg) rotateY(0deg); }
+.link-btn::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(217,119,87,0.35), transparent 65%); opacity: 0; transition: opacity 0.35s; pointer-events: none; border-radius: inherit; }
+.link-btn:hover::before { opacity: 1; }
+.link-btn:hover { border-color: #d97757; color: #d97757; text-decoration: none; box-shadow: 0 4px 14px rgba(217,119,87,0.15); background: #fce8dc; transform: perspective(400px) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg)) translateY(-2px); }
 .link-btn.primary { background: #d97757; color: #fff; border-color: #d97757; }
-.link-btn.primary:hover { background: #c5694a; border-color: #c5694a; }
+.link-btn.primary:hover { background: #c5694a; color: #fff; border-color: #c5694a; }
+
+/* ── Release Status ── */
+.release-status { font-size: 0.85rem; color: #b0aea5; margin: 0.5rem 0 0; text-align: center; font-family: 'Poppins', Arial, sans-serif; }
+.release-status .rel-done { color: #6f9f5e; font-weight: 700; }
+.release-status .rel-pending { color: #d6d4cb; }
 
 /* ── Teaser ── */
 .teaser { text-align: center; padding: 1.5rem 0; }

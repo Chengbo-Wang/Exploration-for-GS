@@ -14,6 +14,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // 3D tilt + spotlight on link buttons
+    document.querySelectorAll('.link-btn').forEach(function (btn) {
+        btn.addEventListener('mousemove', function (e) {
+            var r = btn.getBoundingClientRect();
+            var x = (e.clientX - r.left) / r.width - 0.5;
+            var y = (e.clientY - r.top) / r.height - 0.5;
+            btn.style.setProperty('--rx', (x * 22).toFixed(1) + 'deg');
+            btn.style.setProperty('--ry', (-y * 22).toFixed(1) + 'deg');
+            btn.style.setProperty('--mx', ((x + 0.5) * 100).toFixed(1) + '%');
+            btn.style.setProperty('--my', ((y + 0.5) * 100).toFixed(1) + '%');
+        });
+        btn.addEventListener('mouseleave', function () {
+            btn.style.setProperty('--rx', '0deg');
+            btn.style.setProperty('--ry', '0deg');
+        });
+    });
+
     // Canvas image comparison (based on EDGS video_comparison.js)
     var canvas = document.getElementById('comp-canvas');
     if (canvas) {
